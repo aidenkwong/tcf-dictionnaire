@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="121 high-frequency TCF Canada vocabulary words with French audio and English translations.">
+<title>Dictionnaire TCF Canada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one dictionary column under a sticky search-and-filter bar; tiers act as chapter breaks */
+:root {
+  --bg: #F2F4F7;
+  --surface: #FFFFFF;
+  --ink: #17223A;
+  --muted: #5A6477;
+  --line: #DAE0E9;
+  --accent: #B3223A;
+  --accent-soft: #F8E4E7;
+  --accent-ink: #FFFFFF;
+  --ok: #1F7A55;
+  --ok-soft: #E1F2EA;
+  --warn: #9A5B00;
+  --warn-soft: #FBEFD9;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E141F; --surface: #161F2E; --ink: #E6EBF3; --muted: #97A2B4; --line: #283346;
+    --accent: #F06A7E; --accent-soft: #3A1D26; --accent-ink: #1A0D12;
+    --ok: #5FD0A0; --ok-soft: #13302A; --warn: #F2B65C; --warn-soft: #33270F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E141F; --surface: #161F2E; --ink: #E6EBF3; --muted: #97A2B4; --line: #283346;
+  --accent: #F06A7E; --accent-soft: #3A1D26; --accent-ink: #1A0D12;
+  --ok: #5FD0A0; --ok-soft: #13302A; --warn: #F2B65C; --warn-soft: #33270F;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+header.top { padding-block: 32px 8px; }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 6vw, 44px);
+  line-height: 1.05;
+  margin: 6px 0 10px;
+  text-wrap: balance;
+}
+.lede { color: var(--muted); max-width: 62ch; margin: 0; }
+
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding-block: 12px;
+  margin-top: 16px;
+}
+.bar .wrap { display: grid; gap: 10px; }
+.search {
+  width: 100%;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.search:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+select {
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  max-width: 100%;
+}
+.ctl-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 13px; cursor: pointer; }
+.spacer { flex: 1; }
+.voice-name { font-family: var(--font-display); font-size: 13px; }
+.progress { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.notice {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--warn-soft);
+  color: var(--ink);
+  font-size: 14px;
+  border: 1px solid var(--line);
+}
+.notice b { color: var(--warn); }
+
+main { padding-block: 8px 48px; }
+.tier-head { padding-block: 28px 8px; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
+.tier-head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.tier-head h2 .range { font-family: var(--font-mono); font-size: 13px; font-weight: 400; color: var(--muted); }
+.tier-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+
+.entry {
+  display: grid;
+  grid-template-columns: 3.2em 1fr;
+  gap: 4px 12px;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.entry.learned .word, .entry.learned .ex-text { opacity: .55; }
+.rank {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  padding-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.body { min-width: 0; display: grid; gap: 6px; }
+.headline { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.2;
+}
+.pos { font-style: italic; color: var(--muted); font-size: 15px; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.tag.ff { background: var(--warn-soft); color: var(--warn); font-weight: 500; }
+.meaning { margin: 0; }
+.note { color: var(--muted); }
+.example { display: flex; gap: 10px; align-items: flex-start; }
+.ex-lines { min-width: 0; display: grid; gap: 2px; padding-top: 3px; }
+.ex-text { margin: 0; font-style: italic; }
+.ex-en { margin: 0; color: var(--muted); font-size: 14px; font-family: var(--font-display); }
+body.hide-en .ex-en { display: none; }
+.tail { display: flex; justify-content: flex-end; }
+
+.play {
+  flex: none;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.play.sm { width: 28px; height: 28px; }
+.play svg { width: 16px; height: 16px; }
+.play.sm svg { width: 13px; height: 13px; }
+.play:hover { background: var(--accent-soft); }
+.play.playing { background: var(--accent); color: var(--accent-ink); }
+.play.playing::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: ring 1.2s ease-out infinite;
+}
+@keyframes ring { from { opacity: .7; transform: scale(.9); } to { opacity: 0; transform: scale(1.25); } }
+@media (prefers-reduced-motion: reduce) { .play.playing::after { animation: none; opacity: .5; } }
+
+.learn { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 12px; color: var(--muted); cursor: pointer; }
+.learn input { accent-color: var(--ok); }
+.entry.learned .learn { color: var(--ok); }
+
+.empty { padding: 40px 0; text-align: center; color: var(--muted); }
+
+.conn { margin-top: 40px; }
+.conn h2 { font-family: var(--font-display); font-size: 22px; margin: 0 0 4px; }
+.conn > p { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 500; }
+td.purpose { font-family: var(--font-display); font-weight: 500; white-space: nowrap; }
+.phrases { display: flex; flex-wrap: wrap; gap: 6px; }
+.say {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 14px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+}
+.say:hover { border-color: var(--accent); }
+.say.playing { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+td.en { color: var(--muted); }
+
+footer { padding-block: 24px 40px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 480px) {
+  .entry { grid-template-columns: 2.4em 1fr; gap: 4px 8px; }
+  .word { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<header class="top wrap">
+  <div class="eyebrow">TCF Canada · Vocabulaire</div>
+  <h1>Dictionnaire TCF Canada</h1>
+  <p class="lede">121 high-frequency words, ranked from most to least common. Tap the speaker beside a word or an example sentence to hear it in French.</p>
+  <div class="notice" id="voiceNotice" hidden></div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <input class="search" id="q" type="search" placeholder="Search in French or English… (try loyer, rent, santé)" autocomplete="off">
+    <div class="row" id="tiers" role="group" aria-label="Filter by tier">
+      <button class="chip" data-tier="0" aria-pressed="true">All</button>
+      <button class="chip" data-tier="1" aria-pressed="false">Tier 1</button>
+      <button class="chip" data-tier="2" aria-pressed="false">Tier 2</button>
+      <button class="chip" data-tier="3" aria-pressed="false">Tier 3</button>
+      <button class="chip" data-tier="4" aria-pressed="false">Canadian</button>
+      <select id="theme" aria-label="Filter by theme"><option value="">All themes</option></select>
+    </div>
+    <div class="row">
+      <span class="ctl-label">Speed</span>
+      <div class="row" role="group" aria-label="Speech speed">
+        <button class="chip" data-rate="1" aria-pressed="true">Normal</button>
+        <button class="chip" data-rate="0.75" aria-pressed="false">Slow</button>
+      </div>
+      <span class="ctl-label">Voice</span>
+      <span class="voice-name">Benjamin · Standard French (France)</span>
+      <span class="spacer"></span>
+      <label class="toggle"><input type="checkbox" id="showEn" checked> Show English</label>
+      <label class="toggle"><input type="checkbox" id="hideLearned"> Hide learned</label>
+      <span class="progress" id="progress"></span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="list"></div>
+
+  <section class="conn" id="connecteurs">
+    <h2>Connecteurs</h2>
+    <p>Linking words are graded in the writing and speaking parts. Tap any phrase to hear it.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Purpose</th><th>French</th><th>English</th></tr></thead>
+        <tbody id="connBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  The ranking is an estimate based on everyday French frequency and how often each topic appears on the TCF Canada. There is no official word list. Audio recorded with the ElevenLabs voice Benjamin, in standard French.
+</footer>
+
+<script>
+const TIERS = [
+  null,
+  { name: "Essential", range: "1–30", blurb: "These come up in almost every part of the exam. Know them without thinking." },
+  { name: "Very common", range: "31–75", blurb: "Core words for the exam's main topics. Expect to see most of them on test day." },
+  { name: "Common", range: "76–113", blurb: "Words that lift your writing and speaking from B1 to B2/C1." },
+  { name: "Canadian French", range: "114–121", blurb: "Less common in France, but frequent in the TCF Canada's listening and reading parts." }
+];
+const tierOf = r => r <= 30 ? 1 : r <= 75 ? 2 : r <= 113 ? 3 : 4;
+
+const THEMES = {
+  "Travail": "Work", "Logement": "Housing", "Immigration": "Immigration", "Santé": "Health",
+  "Environnement": "Environment", "Éducation": "Education", "Économie": "Economy", "Société": "Society",
+  "Quotidien": "Daily life", "Transport": "Transport", "Admin": "Paperwork", "Connecteur": "Linking words",
+  "Opinion": "Opinion", "Québec": "Canadian usage"
+};
+
+// [word, part of speech, meaning, note, example, theme, falseFriend]
+const WORDS = [
+["un besoin","n.m.","need","avoir besoin de = to need","Nous avons besoin de plus de médecins en région.","Santé"],
+["un avis","n.m.","opinion; notice","","À mon avis, les transports devraient être gratuits.","Opinion"],
+["un emploi","n.m.","job","une offre d'emploi = job posting","Il a trouvé un emploi trois mois après son arrivée.","Travail"],
+["un logement","n.m.","housing, place to live","","La crise du logement touche tout le pays.","Logement"],
+["un droit","n.m.","right; law","les droits de la personne = human rights","Les locataires ont des droits.","Société"],
+["un moyen","n.m.","means, way","les moyens de transport","Le vélo est un moyen de transport écologique.","Transport"],
+["le but","n.m.","goal, aim","","Le but de cette campagne est de réduire les déchets.","Opinion"],
+["un poste","n.m.","position, job","","Ce poste est à temps plein.","Travail"],
+["une offre","n.f.","offer","","J'ai accepté l'offre d'emploi.","Travail"],
+["un salaire","n.m.","salary, wage","","Le salaire minimum a été augmenté.","Travail"],
+["cependant","conj.","however","","Cette solution est efficace ; cependant, elle coûte cher.","Connecteur"],
+["un avantage","n.m.","advantage","","Le télétravail présente de nombreux avantages.","Opinion"],
+["un inconvénient","n.m.","drawback","","Le principal inconvénient de la banlieue, c'est la distance.","Opinion"],
+["augmenter","v.","to increase","","Le prix de l'épicerie a beaucoup augmenté.","Économie"],
+["réduire","v.","to reduce","","Nous devons réduire nos émissions de gaz à effet de serre.","Environnement"],
+["obtenir","v.","to get, to obtain","","Il a obtenu sa résidence permanente.","Immigration"],
+["éviter","v.","to avoid","","Il faut éviter les produits en plastique.","Environnement"],
+["malgré","prép.","despite","","Malgré le froid, j'adore vivre ici.","Connecteur"],
+["grâce à","prép.","thanks to","","Grâce à ce programme, j'ai trouvé un stage.","Connecteur"],
+["actuellement","adv.","currently","Not \"actually\", which is en fait","Je cherche actuellement un emploi dans mon domaine.","Quotidien",1],
+["le loyer","n.m.","rent","","Mon loyer a augmenté de 5 %.","Logement"],
+["un rendez-vous","n.m.","appointment","prendre rendez-vous = to make an appointment","J'ai pris rendez-vous chez le dentiste.","Santé"],
+["les transports en commun","n.m. pl.","public transit","","Je prends les transports en commun pour aller au travail.","Transport"],
+["un quartier","n.m.","neighbourhood","","J'habite dans un quartier calme.","Logement"],
+["un voisin","n.m.","neighbour","","Mes voisins sont très accueillants.","Logement"],
+["disponible","adj.","available","","Le médecin n'est pas disponible avant mardi.","Quotidien"],
+["gratuit","adj.","free (of charge)","","Les cours de français sont gratuits pour les immigrants.","Immigration"],
+["la formation","n.f.","training, education","","L'entreprise offre une formation aux nouveaux employés.","Éducation"],
+["un diplôme","n.m.","degree, diploma","","Mon diplôme étranger doit être reconnu.","Éducation"],
+["un horaire","n.m.","schedule, timetable","","J'ai un horaire flexible.","Travail"],
+["par conséquent","loc.","consequently","","Les loyers augmentent ; par conséquent, beaucoup de familles déménagent.","Connecteur"],
+["en revanche","loc.","on the other hand","","La ville est chère ; en revanche, les salaires sont élevés.","Connecteur"],
+["d'ailleurs","adv.","besides, moreover","","D'ailleurs, plusieurs études confirment ce point.","Connecteur"],
+["tandis que","conj.","whereas, while","","Mon frère aime la ville, tandis que je préfère la campagne.","Connecteur"],
+["une compétence","n.f.","skill","","Les employeurs recherchent des compétences en informatique.","Travail"],
+["une candidature","n.f.","application","poser sa candidature = to apply","J'ai envoyé ma candidature par courriel.","Travail"],
+["un entretien","n.m.","interview; maintenance","entretien d'embauche = job interview","J'ai un entretien d'embauche demain.","Travail"],
+["un employeur","n.m.","employer","","Mon employeur offre une assurance collective.","Travail"],
+["un domaine","n.m.","field, area","","Elle travaille dans le domaine de la santé.","Travail"],
+["le chômage","n.m.","unemployment","le taux de chômage = unemployment rate","Le taux de chômage a baissé cette année.","Économie"],
+["le coût de la vie","n.m.","cost of living","","Le coût de la vie est plus élevé à Vancouver.","Économie"],
+["le taux","n.m.","rate","taux d'intérêt, taux de chômage","Les taux d'intérêt ont augmenté.","Économie"],
+["le revenu","n.m.","income","","Le revenu moyen a augmenté.","Économie"],
+["un impôt","n.m.","tax","faire sa déclaration d'impôts = to file taxes","Il faut déclarer ses impôts avant le 30 avril.","Admin"],
+["un formulaire","n.m.","form","remplir un formulaire = to fill out a form","Remplissez le formulaire en ligne.","Admin"],
+["une inscription","n.f.","registration","s'inscrire = to sign up","L'inscription aux cours se fait en ligne.","Admin"],
+["les frais","n.m. pl.","fees, costs","frais de scolarité = tuition","Les frais de scolarité sont élevés pour les étudiants étrangers.","Éducation"],
+["l'assurance","n.f.","insurance","","L'assurance maladie couvre la plupart des soins.","Santé"],
+["les soins","n.m. pl.","care","les soins de santé = health care","Les soins de santé sont financés par l'État.","Santé"],
+["un médecin de famille","n.m.","family doctor","","Trouver un médecin de famille peut prendre des années.","Santé"],
+["une urgence","n.f.","emergency","les urgences = the ER","Il a attendu huit heures aux urgences.","Santé"],
+["déménager","v.","to move (house)","","Nous déménageons à Montréal le 1er juillet.","Logement"],
+["un propriétaire","n.m.","landlord; owner","","Le propriétaire refuse de faire les réparations.","Logement"],
+["un locataire","n.m.","tenant","","Le locataire doit payer le loyer le 1er du mois.","Logement"],
+["une annonce","n.f.","ad, announcement","","J'ai répondu à une annonce pour un appartement.","Logement"],
+["un déchet","n.m.","piece of waste","trier ses déchets = to sort one's waste","Chaque famille produit trop de déchets.","Environnement"],
+["le recyclage","n.m.","recycling","","Le recyclage est obligatoire dans ma ville.","Environnement"],
+["la consommation","n.f.","consumption","","Réduire sa consommation d'énergie permet d'économiser.","Environnement"],
+["le comportement","n.m.","behaviour","","Il faut changer nos comportements pour protéger la planète.","Environnement"],
+["un réseau","n.m.","network","les réseaux sociaux = social media","Les réseaux sociaux influencent les jeunes.","Société"],
+["un lien","n.m.","link, bond","","Il garde des liens forts avec sa famille.","Société"],
+["la qualité de vie","n.f.","quality of life","","Les gens choisissent la campagne pour la qualité de vie.","Société"],
+["s'adapter à","v.","to adapt to","","Il faut du temps pour s'adapter à l'hiver canadien.","Immigration"],
+["s'intégrer","v.","to integrate, to fit in","","Parler la langue aide à s'intégrer.","Immigration"],
+["accueillir","v.","to welcome, to take in","","Le Canada accueille des milliers d'immigrants chaque année.","Immigration"],
+["un permis","n.m.","permit, licence","permis de travail, permis de conduire","Mon permis de travail expire en mars.","Immigration"],
+["la résidence permanente","n.f.","permanent residence","","J'ai déposé ma demande de résidence permanente.","Immigration"],
+["la citoyenneté","n.f.","citizenship","un citoyen, une citoyenne = a citizen","Il a obtenu la citoyenneté canadienne après cinq ans.","Immigration"],
+["le télétravail","n.m.","remote work","","Je fais du télétravail trois jours par semaine.","Travail"],
+["efficace","adj.","effective, efficient","","Cette méthode est très efficace.","Opinion"],
+["faciliter","v.","to make easier","","Internet facilite la recherche d'emploi.","Opinion"],
+["un défi","n.m.","challenge","","Apprendre une langue est un vrai défi.","Immigration"],
+["bilingue","adj.","bilingual","","Ce poste exige un candidat bilingue.","Travail"],
+["une facture","n.f.","bill, invoice","","La facture d'électricité est arrivée.","Quotidien"],
+["la vie quotidienne","n.f.","daily life","","La technologie a changé notre vie quotidienne.","Quotidien"],
+["néanmoins","adv.","nevertheless","","Le projet est ambitieux ; néanmoins, il est réalisable.","Connecteur"],
+["autrement dit","loc.","in other words","","Autrement dit, cette mesure coûte trop cher.","Connecteur"],
+["favoriser","v.","to encourage, to promote","","Le bénévolat favorise l'intégration.","Opinion"],
+["un enjeu","n.m.","stake, key issue","","Le climat est un enjeu majeur pour notre génération.","Société"],
+["un atout","n.m.","asset, strong point","","Le bilinguisme est un atout sur le marché du travail.","Travail"],
+["une exigence","n.f.","requirement","","Quelles sont les exigences du poste ?","Travail"],
+["un stage","n.m.","internship","","Elle fait un stage dans une entreprise de technologie.","Travail"],
+["un congé","n.m.","leave, time off","congé parental, congé de maladie","Elle est en congé de maternité.","Travail"],
+["la retraite","n.f.","retirement","prendre sa retraite = to retire","Mes parents prendront leur retraite l'an prochain.","Travail"],
+["gérer","v.","to manage","","Elle gère une équipe de dix personnes.","Travail"],
+["les loisirs","n.m. pl.","leisure activities","","Quels sont vos loisirs préférés ?","Quotidien"],
+["un jour férié","n.m.","public holiday","","Le 1er juillet est un jour férié.","Quotidien"],
+["le bien-être","n.m.","well-being","","Le sport contribue au bien-être des employés.","Santé"],
+["un mode de vie","n.m.","lifestyle","","Il a adopté un mode de vie plus sain.","Santé"],
+["nuire à","v.","to harm","","Les écrans nuisent au sommeil des enfants.","Santé"],
+["une ordonnance","n.f.","prescription","","Le pharmacien a besoin de votre ordonnance.","Santé"],
+["la pénurie","n.f.","shortage","","Il y a une pénurie d'infirmières.","Santé"],
+["la main-d'œuvre","n.f.","workforce, labour","pénurie de main-d'œuvre = labour shortage","Le Québec manque de main-d'œuvre.","Économie"],
+["la croissance","n.f.","growth","","La croissance économique ralentit.","Économie"],
+["le niveau de vie","n.m.","standard of living","","Le niveau de vie au Canada est élevé.","Économie"],
+["économiser","v.","to save (money, energy)","","J'économise pour acheter une maison.","Économie"],
+["gaspiller","v.","to waste","le gaspillage = waste","On gaspille trop de nourriture.","Environnement"],
+["le développement durable","n.m.","sustainable development","","L'entreprise s'engage pour le développement durable.","Environnement"],
+["sensibiliser","v.","to raise awareness","","Il faut sensibiliser les jeunes à l'environnement.","Société"],
+["le bénévolat","n.m.","volunteering","","Faire du bénévolat aide les nouveaux arrivants à s'intégrer.","Société"],
+["l'isolement","n.m.","isolation","","Le télétravail peut causer de l'isolement.","Société"],
+["l'épanouissement","n.m.","personal fulfilment","","Le travail contribue à l'épanouissement personnel.","Société"],
+["une amélioration","n.f.","improvement","","On constate une amélioration des services publics.","Société"],
+["mettre en place","loc.","to set up, to implement","","Le gouvernement a mis en place un nouveau programme.","Société"],
+["davantage","adv.","more","","Les jeunes devraient lire davantage.","Éducation"],
+["se débrouiller","v.","to manage, to get by","","Je me débrouille bien en français maintenant.","Quotidien"],
+["un bilan","n.m.","assessment, results","faire le bilan = to take stock","Faisons le bilan de cette première année.","Travail"],
+["une pièce justificative","n.f.","supporting document","","Joignez les pièces justificatives à votre demande.","Admin"],
+["l'hébergement","n.m.","accommodation","","L'hébergement est inclus dans le prix.","Logement"],
+["le bruit","n.m.","noise","","Le bruit des voisins m'empêche de dormir.","Logement"],
+["un vol","n.m.","flight; theft","","Mon vol pour Paris est annulé.","Transport"],
+["un embouteillage","n.m.","traffic jam","","Il y a des embouteillages tous les matins.","Transport"],
+["abordable","adj.","affordable","","Il est difficile de trouver un logement abordable à Toronto.","Logement"],
+["un courriel","n.m.","email","","Veuillez répondre à ce courriel avant vendredi.","Québec"],
+["une épicerie","n.f.","grocery store; groceries","faire l'épicerie = to buy groceries","Je fais l'épicerie le samedi.","Québec"],
+["une fin de semaine","n.f.","weekend","","Qu'est-ce que tu fais en fin de semaine ?","Québec"],
+["un dépanneur","n.m.","convenience store","","Je vais au dépanneur acheter du lait.","Québec"],
+["magasiner","v.","to shop","le magasinage = shopping","On va magasiner au centre-ville ?","Québec"],
+["une garderie","n.f.","daycare","","Il y a une longue liste d'attente pour la garderie.","Québec"],
+["un souper","n.m.","dinner","In Québec: déjeuner = breakfast, dîner = lunch, souper = dinner","On soupe à six heures.","Québec"],
+["un travailleur autonome","n.m.","self-employed worker","","Comme travailleur autonome, je gère mes propres horaires.","Québec"]
+];
+
+// English translations of the example sentences, same order as WORDS
+const EN = [
+"We need more doctors in rural areas.",
+"In my opinion, public transit should be free.",
+"He found a job three months after arriving.",
+"The housing crisis affects the whole country.",
+"Tenants have rights.",
+"Cycling is an eco-friendly means of transport.",
+"The goal of this campaign is to reduce waste.",
+"This position is full-time.",
+"I accepted the job offer.",
+"The minimum wage has been raised.",
+"This solution is effective; however, it is expensive.",
+"Remote work has many advantages.",
+"The main drawback of the suburbs is the distance.",
+"The price of groceries has gone up a lot.",
+"We must reduce our greenhouse gas emissions.",
+"He obtained his permanent residence.",
+"We should avoid plastic products.",
+"Despite the cold, I love living here.",
+"Thanks to this program, I found an internship.",
+"I'm currently looking for a job in my field.",
+"My rent went up by 5%.",
+"I made an appointment with the dentist.",
+"I take public transit to get to work.",
+"I live in a quiet neighbourhood.",
+"My neighbours are very welcoming.",
+"The doctor isn't available until Tuesday.",
+"French classes are free for immigrants.",
+"The company provides training for new employees.",
+"My foreign degree has to be recognized.",
+"I have a flexible schedule.",
+"Rents are rising; consequently, many families are moving.",
+"The city is expensive; on the other hand, salaries are high.",
+"Besides, several studies confirm this point.",
+"My brother likes the city, whereas I prefer the countryside.",
+"Employers are looking for computer skills.",
+"I sent my application by email.",
+"I have a job interview tomorrow.",
+"My employer offers group insurance.",
+"She works in the health field.",
+"The unemployment rate fell this year.",
+"The cost of living is higher in Vancouver.",
+"Interest rates have gone up.",
+"Average income has increased.",
+"You have to file your taxes before April 30.",
+"Fill out the form online.",
+"Registration for classes is done online.",
+"Tuition fees are high for international students.",
+"Health insurance covers most care.",
+"Health care is funded by the government.",
+"Finding a family doctor can take years.",
+"He waited eight hours in the ER.",
+"We're moving to Montreal on July 1.",
+"The landlord refuses to do the repairs.",
+"The tenant must pay the rent on the 1st of the month.",
+"I replied to an ad for an apartment.",
+"Every family produces too much waste.",
+"Recycling is mandatory in my city.",
+"Reducing your energy consumption helps you save money.",
+"We need to change our behaviour to protect the planet.",
+"Social media influences young people.",
+"He keeps strong ties with his family.",
+"People choose the countryside for the quality of life.",
+"It takes time to adapt to the Canadian winter.",
+"Speaking the language helps you fit in.",
+"Canada welcomes thousands of immigrants every year.",
+"My work permit expires in March.",
+"I submitted my application for permanent residence.",
+"He obtained Canadian citizenship after five years.",
+"I work remotely three days a week.",
+"This method is very effective.",
+"The internet makes job hunting easier.",
+"Learning a language is a real challenge.",
+"This position requires a bilingual candidate.",
+"The electricity bill has arrived.",
+"Technology has changed our daily life.",
+"The project is ambitious; nevertheless, it is achievable.",
+"In other words, this measure costs too much.",
+"Volunteering promotes integration.",
+"Climate is a major issue for our generation.",
+"Bilingualism is an asset in the job market.",
+"What are the requirements for the position?",
+"She is doing an internship at a tech company.",
+"She is on maternity leave.",
+"My parents will retire next year.",
+"She manages a team of ten people.",
+"What are your favourite leisure activities?",
+"July 1 is a public holiday.",
+"Sport contributes to employees' well-being.",
+"He adopted a healthier lifestyle.",
+"Screens harm children's sleep.",
+"The pharmacist needs your prescription.",
+"There is a shortage of nurses.",
+"Quebec is short of workers.",
+"Economic growth is slowing down.",
+"The standard of living in Canada is high.",
+"I'm saving up to buy a house.",
+"We waste too much food.",
+"The company is committed to sustainable development.",
+"We need to make young people aware of environmental issues.",
+"Volunteering helps newcomers fit in.",
+"Remote work can lead to isolation.",
+"Work contributes to personal fulfilment.",
+"Public services have improved.",
+"The government has set up a new program.",
+"Young people should read more.",
+"I get by well in French now.",
+"Let's take stock of this first year.",
+"Attach the supporting documents to your application.",
+"Accommodation is included in the price.",
+"The neighbours' noise keeps me from sleeping.",
+"My flight to Paris is cancelled.",
+"There are traffic jams every morning.",
+"It's hard to find affordable housing in Toronto.",
+"Please reply to this email before Friday.",
+"I do the grocery shopping on Saturdays.",
+"What are you doing this weekend?",
+"I'm going to the corner store to buy milk.",
+"Shall we go shopping downtown?",
+"There's a long waiting list for daycare.",
+"We have dinner at six o'clock.",
+"As a self-employed worker, I set my own schedule."
+];
+
+const CONNECTEURS = [
+  ["Adding a point", ["de plus", "en outre", "par ailleurs"], "moreover, furthermore"],
+  ["Contrast", ["cependant", "pourtant", "en revanche", "néanmoins"], "however, on the other hand"],
+  ["Cause", ["car", "puisque", "étant donné que"], "because, since, given that"],
+  ["Consequence", ["donc", "par conséquent", "c'est pourquoi"], "so, therefore, that's why"],
+  ["Concession", ["bien que", "même si", "malgré"], "although, even if, despite (bien que takes the subjunctive)"],
+  ["Example", ["par exemple", "notamment", "comme"], "for example, notably"],
+  ["Opinion", ["à mon avis", "selon moi", "je suis convaincu que"], "in my opinion, I'm convinced that"],
+  ["Conclusion", ["en conclusion", "pour conclure", "en somme"], "in conclusion, all in all"]
+];
+
+const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+const state = {
+  q: "",
+  tier: 0,
+  theme: "",
+  rate: store.get("tcf.speed", 1),
+  hideLearned: store.get("tcf.hideLearned", false),
+  learned: new Set(store.get("tcf.learned", []))
+};
+
+/* ---------- Audio ----------
+   Clips are pre-recorded with ElevenLabs (voice F9KUTOne5xOKqAbIU7yg, eleven_multilingual_v2) and served next to the page.
+   If a clip can't load, the browser's own French voice reads the text instead. */
+const audio = new Audio();
+audio.preload = "auto";
+if ("preservesPitch" in audio) audio.preservesPitch = true;
+const synth = "speechSynthesis" in window ? window.speechSynthesis : null;
+let currentBtn = null;
+let currentText = "";
+
+function stopCurrent() {
+  if (currentBtn) currentBtn.classList.remove("playing");
+  currentBtn = null;
+}
+
+function showNotice(html) {
+  const n = document.getElementById("voiceNotice");
+  n.innerHTML = html;
+  n.hidden = false;
+}
+
+function fallbackSpeak(text, btn) {
+  if (!synth) {
+    stopCurrent();
+    showNotice("<b>Audio couldn't load.</b> Check your connection and try again.");
+    return;
+  }
+  showNotice("<b>Recorded audio couldn't load,</b> so your browser's built-in voice is reading instead. Check your connection and reload for the Azure voice.");
+  const u = new SpeechSynthesisUtterance(text);
+  const fr = synth.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith("fr"));
+  const v = fr.find(x => /fr.fr/i.test(x.lang)) || fr[0];
+  if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "fr-FR"; }
+  u.rate = state.rate;
+  const done = () => { if (currentBtn === btn) stopCurrent(); };
+  u.onend = done;
+  u.onerror = done;
+  synth.speak(u);
+}
+
+function play(file, text, btn) {
+  const wasThis = currentBtn === btn;
+  audio.pause();
+  if (synth) synth.cancel();
+  stopCurrent();
+  if (wasThis) return;
+  currentBtn = btn;
+  currentText = text;
+  btn.classList.add("playing");
+  audio.defaultPlaybackRate = state.rate;
+  audio.src = "audio/" + file + "?v=benjamin";
+  audio.playbackRate = state.rate;
+  audio.play().catch(err => {
+    if (err && err.name === "AbortError") return;
+    if (currentBtn === btn) fallbackSpeak(text, btn);
+  });
+}
+
+audio.addEventListener("ended", stopCurrent);
+audio.addEventListener("error", () => { if (currentBtn) fallbackSpeak(currentText, currentBtn); });
+
+/* ---------- Rendering ---------- */
+const sayable = w => w.replace(/[()]/g, "");
+
+function entryHTML(e, i) {
+  const r = i + 1;
+  const [w, p, m, note, ex, theme, ff] = e;
+  const learned = state.learned.has(r);
+  return `<article class="entry${learned ? " learned" : ""}" data-r="${r}">
+    <div class="rank">${r}</div>
+    <div class="body">
+      <div class="headline">
+        <span class="word" lang="fr">${esc(w)}</span>
+        <button class="play sm" data-say="w" aria-label="Pronounce ${esc(w)}">${ICON}</button>
+        <span class="pos">${esc(p)}</span>
+        <span class="tag">${esc(THEMES[theme] || theme)}</span>
+        ${ff ? '<span class="tag ff">False friend</span>' : ""}
+      </div>
+      <p class="meaning">${esc(m)}${note ? ` <span class="note">· ${esc(note)}</span>` : ""}</p>
+      <div class="example">
+        <button class="play" data-say="e" aria-label="Play example sentence">${ICON}</button>
+        <div class="ex-lines">
+          <p class="ex-text" lang="fr">${esc(ex)}</p>
+          <p class="ex-en" lang="en">${esc(EN[i])}</p>
+        </div>
+      </div>
+      <div class="tail">
+        <label class="learn"><input type="checkbox" data-learn="${r}"${learned ? " checked" : ""}> Learned</label>
+      </div>
+    </div>
+  </article>`;
+}
+
+function render() {
+  const q = norm(state.q.trim());
+  let html = "";
+  let lastTier = 0;
+  let count = 0;
+  WORDS.forEach((e, i) => {
+    const r = i + 1;
+    const t = tierOf(r);
+    if (state.tier && t !== state.tier) return;
+    if (state.theme && e[5] !== state.theme) return;
+    if (state.hideLearned && state.learned.has(r)) return;
+    if (q && !norm([e[0], e[2], e[3], e[4], EN[i], THEMES[e[5]] || ""].join(" ")).includes(q)) return;
+    if (t !== lastTier) {
+      const T = TIERS[t];
+      html += `<div class="tier-head"><h2>Tier ${t}: ${T.name} <span class="range">${T.range}</span></h2><p>${T.blurb}</p></div>`;
+      lastTier = t;
+    }
+    html += entryHTML(e, i);
+    count++;
+  });
+  if (!count) html = `<div class="empty">No words match. Try a different search or clear the filters.</div>`;
+  document.getElementById("list").innerHTML = html;
+  document.getElementById("progress").textContent = `${state.learned.size} / ${WORDS.length} learned`;
+}
+
+function renderConnecteurs() {
+  document.getElementById("connBody").innerHTML = CONNECTEURS.map(([purpose, fr, en], i) =>
+    `<tr><td class="purpose">${esc(purpose)}</td><td><div class="phrases">${
+      fr.map((f, j) => `<button class="say" lang="fr" data-phrase="${esc(f)}" data-file="c${i}-${j}.mp3">${esc(f)}</button>`).join("")
+    }</div></td><td class="en">${esc(en)}</td></tr>`).join("");
+}
+
+/* ---------- Events ---------- */
+document.getElementById("list").addEventListener("click", ev => {
+  const btn = ev.target.closest("button.play");
+  if (!btn) return;
+  const r = +btn.closest(".entry").dataset.r;
+  const e = WORDS[r - 1];
+  const isWord = btn.dataset.say === "w";
+  play(`${btn.dataset.say}${String(r).padStart(3, "0")}.mp3`, isWord ? sayable(e[0]) : e[4], btn);
+});
+
+document.getElementById("list").addEventListener("change", ev => {
+  const box = ev.target.closest("input[data-learn]");
+  if (!box) return;
+  const r = +box.dataset.learn;
+  if (box.checked) state.learned.add(r); else state.learned.delete(r);
+  store.set("tcf.learned", [...state.learned]);
+  if (state.hideLearned) render();
+  else {
+    box.closest(".entry").classList.toggle("learned", box.checked);
+    document.getElementById("progress").textContent = `${state.learned.size} / ${WORDS.length} learned`;
+  }
+});
+
+document.getElementById("connBody").addEventListener("click", ev => {
+  const b = ev.target.closest("button.say");
+  if (b) play(b.dataset.file, b.dataset.phrase, b);
+});
+
+document.getElementById("q").addEventListener("input", ev => { state.q = ev.target.value; render(); });
+
+document.getElementById("tiers").addEventListener("click", ev => {
+  const b = ev.target.closest("button[data-tier]");
+  if (!b) return;
+  state.tier = +b.dataset.tier;
+  document.querySelectorAll("#tiers button[data-tier]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+});
+
+const themeSel = document.getElementById("theme");
+themeSel.innerHTML += Object.entries(THEMES).map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`).join("");
+themeSel.addEventListener("change", () => { state.theme = themeSel.value; render(); });
+
+document.querySelectorAll("button[data-rate]").forEach(b => {
+  b.setAttribute("aria-pressed", +b.dataset.rate === state.rate);
+  b.addEventListener("click", () => {
+    state.rate = +b.dataset.rate;
+    store.set("tcf.speed", state.rate);
+    audio.defaultPlaybackRate = state.rate;
+    audio.playbackRate = state.rate;
+    document.querySelectorAll("button[data-rate]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+});
+
+const hide = document.getElementById("hideLearned");
+hide.checked = state.hideLearned;
+hide.addEventListener("change", () => {
+  state.hideLearned = hide.checked;
+  store.set("tcf.hideLearned", state.hideLearned);
+  render();
+});
+
+const showEn = document.getElementById("showEn");
+showEn.checked = store.get("tcf.showEn", true);
+document.body.classList.toggle("hide-en", !showEn.checked);
+showEn.addEventListener("change", () => {
+  store.set("tcf.showEn", showEn.checked);
+  document.body.classList.toggle("hide-en", !showEn.checked);
+});
+
+render();
+renderConnecteurs();
+</script>
+</body>
+</html>
